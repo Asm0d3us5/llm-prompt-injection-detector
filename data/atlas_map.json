@@ -1,0 +1,37 @@
+{
+  "direct_injection": {
+    "id": "AML.T0054.000",
+    "name": "Direct Prompt Injection",
+    "url": "https://atlas.mitre.org/techniques/AML.T0054"
+  },
+  "indirect_injection": {
+    "id": "AML.T0054.001",
+    "name": "Indirect Prompt Injection",
+    "url": "https://atlas.mitre.org/techniques/AML.T0054"
+  },
+  "jailbreak": {
+    "id": "AML.T0051",
+    "name": "LLM Jailbreak",
+    "url": "https://atlas.mitre.org/techniques/AML.T0051"
+  },
+  "token_smuggling": {
+    "id": "AML.T0054.000",
+    "name": "Obfuscated Prompt Injection",
+    "url": "https://atlas.mitre.org/techniques/AML.T0054"
+  },
+  "prompt_leaking": {
+    "id": "AML.T0056",
+    "name": "LLM Data Leakage / Prompt Extraction",
+    "url": "https://atlas.mitre.org/techniques/AML.T0056"
+  },
+  "role_hijack": {
+    "id": "AML.T0051",
+    "name": "LLM Jailbreak via Persona Hijack",
+    "url": "https://atlas.mitre.org/techniques/AML.T0051"
+  },
+  "benign": {
+    "id": null,
+    "name": "No technique — benign input",
+    "url": null
+  }
+}
