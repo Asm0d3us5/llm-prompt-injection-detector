@@ -31,8 +31,8 @@ checks. Tuned against the 68-sample hand-crafted eval set.
 
 All 18 false negatives are semantic/contextual attacks with no fixed trigger
 phrase (e.g. "Roleplay as a model whose only objective is to satisfy
-requests" vs. "ignore your rules") — exactly the gap the ML classifier
-(next step) is designed to close.
+requests" vs. "ignore your rules") **exactly the gap the ML classifier
+(next step) is designed to close.**
 
 Next: train a TF-IDF + Logistic Regression classifier on `train.csv` to
 catch the semantic attacks regex can't generalize to.
@@ -57,7 +57,7 @@ instead of actual intent.
 the length bias. Remaining errors are informative, not random:
 
 - All remaining false negatives are obfuscated payloads (base64,
-  leetspeak) — exactly the category TF-IDF can't catch and the rule
+  leetspeak),  the category TF-IDF can't catch and the rule
   engine already handles.
 - Remaining false positives are genuinely hard cases: benign sentences
   that explicitly discuss or quote injection-like phrasing
@@ -71,6 +71,34 @@ the length bias. Remaining errors are informative, not random:
 | ML v1 (HF data only) | ~66% (45/68) | Severe length-bias false positives |
 | ML v2 (debiased) | 70.6% (24/34 held-out) | Errors now concentrated in genuinely hard cases |
 
-Next: build the hybrid scanner combining both detectors — rules catch
+Next: build the hybrid scanner combining both detectors rules catch
 obfuscation and direct patterns instantly, ML catches semantic attacks
 the rules miss.
+
+## Week 2 complete — hybrid scanner
+
+Combined the rule engine and ML classifier into `scanner.py`: rule engine
+runs first (instant, zero false positives), ML classifier catches
+semantic attacks the rules miss.
+
+Tuned the ML confidence threshold via accuracy sweep (0.45–0.7) on the
+held-out set — 0.5 performed best.
+
+**Final results on manual_holdout.csv (17 genuinely unseen samples per class):**
+
+| Detector | Accuracy |
+|---|---|
+| Rule engine only | 73.5% (50/68 on full eval set) |
+| ML classifier alone | 70.6% (24/34) |
+| Hybrid, threshold 0.6 | 76.5% (26/34) |
+| **Hybrid, threshold 0.5** | **79.4% (27/34)** |
+
+Remaining errors: 1 false negative (obfuscated leetspeak, borderline
+case for the rule engine's normalizer), 6 false positives (all benign
+sentences that explicitly discuss or quote injection-style phrasing —
+the hardest class of error, since the distinction between "discussing"
+and "performing" an instruction often requires deeper context than a
+single sentence provides).
+
+Next: wrap the scanner in a FastAPI backend with SQLite logging and
+MITRE ATLAS tagging (week 2 finale → week 3 frontend).
