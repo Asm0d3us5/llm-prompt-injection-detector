@@ -100,5 +100,25 @@ the hardest class of error, since the distinction between "discussing"
 and "performing" an instruction often requires deeper context than a
 single sentence provides).
 
-Next: wrap the scanner in a FastAPI backend with SQLite logging and
-MITRE ATLAS tagging (week 2 finale → week 3 frontend).
+## Week 2 complete — FastAPI backend
+
+Wrapped the hybrid scanner in a FastAPI app (`scripts/main.py`) with
+three endpoints:
+
+- `POST /scan` — runs `hybrid_scan()`, tags result with MITRE ATLAS
+  technique, logs to SQLite, returns verdict
+- `GET /history` — recent scan log
+- `GET /stats` — aggregated counts by category and detection method
+
+Verified end-to-end with curl: direct injection correctly flagged and
+logged with its ATLAS ID, benign input correctly passed through with
+low confidence, history and stats endpoints both return accurate data.
+
+**Week 2 fully complete:** taxonomy → rule engine → ML classifier →
+hybrid scanner → API with logging and threat-intel tagging, all backed
+by real before/after evaluation numbers.
+
+Next: Week 3 — build the SOC-style dashboard frontend and wire it to
+this API, plus Ollama integration for live model response comparison.
+
+
