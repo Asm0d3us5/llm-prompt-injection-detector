@@ -2,6 +2,8 @@ import json
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from scanner import hybrid_scan
 import db
@@ -50,4 +52,6 @@ def stats_endpoint():
 
 @app.get("/")
 def root():
-    return {"status": "ok", "service": "LLM Prompt Injection Detection API"}
+    return FileResponse("static/index.html")
+
+app.mount("/static", StaticFiles(directory="static"), name="static")

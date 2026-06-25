@@ -121,4 +121,33 @@ by real before/after evaluation numbers.
 Next: Week 3 — build the SOC-style dashboard frontend and wire it to
 this API, plus Ollama integration for live model response comparison.
 
+## Week 3 — SOC dashboard frontend
 
+Built a dark, SOC-console-style dashboard (`scripts/static/`) served
+directly by FastAPI as static files, no separate frontend build step.
+
+- **Live prompt tester** — textarea + "Scan Prompt" button hitting
+  `POST /scan` directly from the browser, rendering verdict, confidence,
+  category, and a clickable MITRE ATLAS badge linking to the technique
+  page on attack.mitre.org/ATLAS
+- **Attack category breakdown** — Chart.js bar chart pulling from
+  `GET /stats`
+- **Confidence distribution** — histogram bucketed client-side from
+  `GET /history` (0-20% / 20-40% / ... / 80-100%), since `/stats`
+  doesn't expose a confidence histogram directly
+- **Recent scans table** — last 25 entries from `GET /history`, with
+  verdict, category, ATLAS ID, confidence, and detection method (rule
+  vs ML) per row
+- **Ollama comparison panel** — UI built and wired to call
+  `POST /ollama-query` with attacker input vs. live model response
+  shown side-by-side; backend route not implemented yet (next step)
+
+Verified end-to-end against the real API: ran prompts across all 6
+attack categories (direct_injection, indirect_injection, jailbreak,
+token_smuggling, prompt_leaking, role_hijack) plus benign/false-positive
+bait, confirmed the category chart, confidence histogram, and history
+table all populate correctly from live scans.
+
+Next: wire up `POST /ollama-query` to a local Ollama model so the
+dashboard can show attacker prompt vs. actual model response side by
+side, completing the Week 3 SOC console.

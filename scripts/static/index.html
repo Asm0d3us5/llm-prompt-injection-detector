@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prompt Injection Detector — SOC Console</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-dot"></span>
+    <span class="brand-text">PROMPT<span class="accent">INJECT</span>-DETECT</span>
+  </div>
+  <div class="topbar-meta">
+    <span id="scanCount">0 scans</span>
+    <span class="sep">|</span>
+    <span id="clock">--:--:--</span>
+  </div>
+</header>
+
+<main class="grid">
+
+  <!-- Live tester -->
+  <section class="panel panel-tester">
+    <h2>Live Prompt Tester</h2>
+    <textarea id="promptInput" placeholder="Paste a prompt to scan..."></textarea>
+    <div class="tester-controls">
+      <button id="scanBtn">Scan Prompt</button>
+      <label class="toggle">
+        <input type="checkbox" id="ollamaToggle">
+        <span>Run through local LLM (Ollama)</span>
+      </label>
+    </div>
+
+    <div id="resultCard" class="result-card hidden">
+      <div class="result-header">
+        <span id="resultVerdict" class="verdict"></span>
+        <span id="resultConfidence" class="confidence"></span>
+      </div>
+      <div class="result-row">
+        <span class="label">Category</span>
+        <span id="resultCategory" class="value">--</span>
+      </div>
+      <div class="result-row">
+        <span class="label">MITRE ATLAS</span>
+        <span id="resultAtlas" class="value badge">--</span>
+      </div>
+      <div class="result-row">
+        <span class="label">Detection source</span>
+        <span id="resultSource" class="value">--</span>
+      </div>
+    </div>
+
+    <div id="ollamaPane" class="ollama-pane hidden">
+      <div class="ollama-col">
+        <h3>Attacker Input</h3>
+        <pre id="ollamaInput"></pre>
+      </div>
+      <div class="ollama-col">
+        <h3>Model Response</h3>
+        <pre id="ollamaOutput">Waiting...</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="panel panel-stats">
+    <h2>Attack Category Breakdown</h2>
+    <canvas id="categoryChart"></canvas>
+  </section>
+
+  <section class="panel panel-stats">
+    <h2>Confidence Distribution</h2>
+    <canvas id="confidenceChart"></canvas>
+  </section>
+
+  <!-- History -->
+  <section class="panel panel-history">
+    <h2>Recent Scans</h2>
+    <table id="historyTable">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Verdict</th>
+          <th>Category</th>
+          <th>ATLAS</th>
+          <th>Confidence</th>
+          <th>Source</th>
+        </tr>
+      </thead>
+      <tbody id="historyBody">
+      </tbody>
+    </table>
+  </section>
+
+</main>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
