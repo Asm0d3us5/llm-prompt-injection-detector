@@ -8,6 +8,8 @@ from fastapi.responses import FileResponse
 from scanner import hybrid_scan
 import db
 
+import requests
+
 # Load ATLAS mapping once at startup
 with open("../data/atlas_map.json") as f:
     ATLAS_MAP = json.load(f)
@@ -55,3 +57,24 @@ def root():
     return FileResponse("static/index.html")
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+class OllamaRequest(BaseModel):
+    prompt: str
+
+@app.post("/ollama-query")
+def ollama_query_endpoint(request: OllamaRequest):
+    try:
+        resp = requests.post(
+            "http://localhost:11434/api/generate",
+            json={
+                "model": "llama3.2:3b",
+                "prompt": request.prompt,
+                "stream": False,
+            },
+            timeout=60,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        return {"response": data.get("response", "")}
+    except requests.exceptions.RequestException as e:
+        return {"response": f"[Ollama error: {e}]"}
